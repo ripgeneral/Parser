@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+{% for item in items %}
+<div style="padding-bottom: 20px">
+    <div>
+        <span>{{item.date}}</span>
+        <a href='{{item.link}}'>{{item.id}}</a>
+        <span>{{item.price}}</span>
+    </div>
+    <div>{{item.title}}</div>
+    <!--<div>{{item.desc}}</div>-->
+</div>
+{% endfor %}
+</body>
+</html>
