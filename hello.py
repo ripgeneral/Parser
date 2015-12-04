@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 app.config['MONGO_HOST'] = '172.16.0.154'
 app.config['MONGO_PORT'] = 27017
-app.config['MONGO_DBNAME'] = 'test'
+# app.config['MONGO_DBNAME'] = 'test'
 # app.config.update(
 #     MONGO_HOST = '172.16.0.154',
 #     MONGO_PORT = 27017,
@@ -44,10 +44,14 @@ def hello():
 
 @app.route('/view')
 def view():
-    _items = db.test.find().sort("id",pymongo.DESCENDING)
-    items  = [item for item in _items]
-    return render_template('view.html',items = items)
-
+    try:
+        # _items = db.test.find().sort("id",pymongo.DESCENDING)
+        _items = db.test.find({})
+        # .sort("id",pymongo.DESCENDING)
+        items  = [item for item in _items]
+        return render_template('view.html',items = items)
+    except Exception as e:
+        return str(e)
 @app.route('/projects/')
 def projects():
     return 'The project pages'
