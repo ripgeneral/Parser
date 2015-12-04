@@ -8,14 +8,15 @@ from flask.ext.pymongo import PyMongo
 
 app = Flask(__name__)
 
-app.config['MONGO_HOST'] = '172.16.0.154'
-app.config['MONGO_PORT'] = 27017
+# app.config['MONGO_HOST'] = '172.16.0.154'
+# app.config['MONGO_PORT'] = 27017
 # app.config['MONGO_DBNAME'] = 'test'
-# app.config.update(
-#     MONGO_HOST = '172.16.0.154',
-#     MONGO_PORT = 27017,
-#     MONGO_DBNAME = 'test'
-# )
+app.config.update(
+    MONGO_HOST = '172.16.0.154',
+    MONGO_PORT = 27017,
+    MONGO_DBNAME = 'test',
+    MONGO_AUTO_START_REQUEST = False
+)
 
 mongo = PyMongo(app,config_prefix='MONGO')
 
@@ -46,12 +47,14 @@ def hello():
 def view():
     try:
         # _items = db.test.find().sort("id",pymongo.DESCENDING)
-        _items = db.test.find({})
+        _items = mongo.db.test.find().sort("id", -1 )
         # .sort("id",pymongo.DESCENDING)
+        # return _items
         items  = [item for item in _items]
         return render_template('view.html',items = items)
     except Exception as e:
-        return str(e)
+        return 'Error: '+str(e)
+
 @app.route('/projects/')
 def projects():
     return 'The project pages'
