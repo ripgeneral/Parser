@@ -1,37 +1,50 @@
+# -*- coding: utf-8 -*-
 #!flask/bin/python
 
 from flask import render_template,redirect,url_for,request
 from flask import Flask
-from pymongo import MongoClient
+# from pymongo import MongoClient
+from flask.ext.pymongo import PyMongo
 
 app = Flask(__name__)
 
-client = MongoClient('172.16.0.154',27017)
-db = client.test
+app.config['MONGO_HOST'] = '172.16.0.154'
+app.config['MONGO_PORT'] = 27017
+app.config['MONGO_DBNAME'] = 'test'
+# app.config.update(
+#     MONGO_HOST = '172.16.0.154',
+#     MONGO_PORT = 27017,
+#     MONGO_DBNAME = 'test'
+# )
+
+mongo = PyMongo(app,config_prefix='MONGO')
+
+# client = MongoClient('172.16.0.154',27017)
+# db = client.test
 
 @app.route('/')
 def hello():
     return render_template('hello.html')
 
-@app.route('/new',methods=['POST'])
-def new():
-    item_doc= {
-        'name':request.form['name'],
-        'desc':request.form['desc']
-    }
-    db.test.insert_one(item_doc)
+# @app.route('/new',methods=['POST'])
+# def new():
+#     item_doc= {
+#         'name':request.form['name'],
+#         'desc':request.form['desc']
+#     }
+#     db.test.insert_one(item_doc)
+#
+#     return redirect(url_for('list'))
 
-    return redirect(url_for('list'))
-
-@app.route('/list')
-def list():
-     _items = db.test.find()
-     items = [item for item in _items]
-     return render_template('list.html',items = items )
+# @app.route('/list')
+# def list():
+#      # _items = db.test.find()
+#      # items = [item for item in _items]
+#      return render_template('list.html',items = items )
 
 @app.route('/view')
 def view():
-    _items = db.test.find()
+    _items = db.test.find().sort("id",pymongo.DESCENDING)
     items  = [item for item in _items]
     return render_template('view.html',items = items)
 
